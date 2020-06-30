@@ -1,3 +1,5 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 package org.example.functions;
 
 import java.util.*;
@@ -12,9 +14,7 @@ import com.microsoft.azure.functions.*;
  */
 public class ConsumeEvent {
     /**
-     * This function listens at endpoint "/api/HttpTrigger-Java". Two ways to invoke it using "curl" command in bash:
-     * 1. curl -d "HTTP Body" {your host}/api/HttpTrigger-Java
-     * 2. curl {your host}/api/HttpTrigger-Java?name=HTTP%20Query
+     * This function responds to eventgrid events by logging the data within the event
      */
     @FunctionName("EventGrid-Consumer")
     public void run(@EventGridTrigger(name = "data") String data, final ExecutionContext context) {
@@ -33,9 +33,8 @@ public class ConsumeEvent {
             }
 
         } catch (Exception e) {
-            context.getLogger().severe(e.getMessage());
+            context.getLogger().info(e.getMessage());
         }
-
-        context.getLogger().info(data);
+        
     }
 }

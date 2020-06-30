@@ -1,3 +1,5 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 package org.example.functions;
 
 import com.microsoft.azure.eventgrid.EventGridClient;
@@ -34,7 +36,7 @@ public class PublishEvents {
             TopicCredentials credentials = new TopicCredentials(TOPIC_KEY);
             EventGridClient egClient = new EventGridClientImpl(credentials);
 
-            List<EventGridEvent> events = new ArrayList<EventGridEvent>();
+            List<EventGridEvent> events = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
                 events.add(new EventGridEvent(UUID.randomUUID().toString(),
                         "Example",
