@@ -1,7 +1,7 @@
 # azure function examples
 This is example code for publishing and consuming event grid custom events
 
-###Running
+## Running
 This small project has 2 parts. The first part, publishing events, is done by 
 running the PublishEvents class locally. In order to do this, set the following 
 system environment variables:
