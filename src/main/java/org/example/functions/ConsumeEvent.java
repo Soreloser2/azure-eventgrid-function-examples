@@ -5,6 +5,9 @@ package org.example.functions;
 import java.util.*;
 
 import com.azure.core.implementation.serializer.jsonwrapper.jacksonwrapper.JacksonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.microsoft.azure.eventgrid.models.EventGridEvent;
 import com.microsoft.azure.functions.annotation.*;
 import com.microsoft.azure.functions.*;
@@ -21,12 +24,20 @@ public class ConsumeEvent {
         context.getLogger().info("Recieved trigger");
 
         try {
-            JacksonDeserializer deserializer = new JacksonDeserializer();
-            EventGridEvent event = deserializer.readString(data, EventGridEvent.class);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JodaModule());
+
+            EventGridEvent event = mapper.readValue(data, EventGridEvent.class);
+
+            context.getLogger().info("EventGrid Event " + event);
 
             if (event.eventType().equalsIgnoreCase("CustomSample.Event")) {
-                PublishEvents.CustomEventData customEventData = deserializer.readString(event.toString(),
+                JsonNode storageEventNode = mapper.readTree(data);
+                JsonNode storageEventDataNode = storageEventNode.get("data");
+
+                PublishEvents.CustomEventData customEventData = mapper.treeToValue(storageEventDataNode,
                         PublishEvents.CustomEventData.class);
+
                 context.getLogger().info("Event Data: " + customEventData.name);
             } else {
                 context.getLogger().info("Other data type: " + event.eventType());
@@ -35,6 +46,6 @@ public class ConsumeEvent {
         } catch (Exception e) {
             context.getLogger().info(e.getMessage());
         }
-        
+
     }
 }
